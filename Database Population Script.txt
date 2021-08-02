@@ -1,0 +1,60 @@
+drop table student cascade constraints;
+drop table course cascade constraints;
+drop table teacher cascade constraints;
+drop table teaches cascade constraints;
+drop table enrolledIn cascade constraints;
+DROP SEQUENCE COURSE_ID;
+DROP PROCEDURE SEARCHCOURSES;
+CREATE SEQUENCE COURSE_ID;
+
+
+CREATE TABLE STUDENT ( STUDENT_SSN NUMBER(20) PRIMARY KEY , STUDENT_AGE NUMBER(10) , STUDENT_NAME VARCHAR2(100) ,
+STUDENT_PHONE_NUMBER char(20) );
+
+CREATE TABLE COURSE ( COURSE_ID NUMBER(10) PRIMARY KEY , COURSE_NAME VARCHAR2(50) , COURSE_FEES NUMBER(10) );
+
+CREATE TABLE TEACHER (TEACHER_SSN NUMBER(20) PRIMARY KEY , TEACHER_AGE NUMBER(10) , TEACHER_NAME VARCHAR2(100),
+TEACHER_PHONE_NUMBER char(20) );
+
+CREATE TABLE TEACHES ( TEACHERSSN NUMBER(20), COURSEID NUMBER(10)  , 
+constraint t_pk primary key (TEACHERSSN,COURSEID) ,
+CONSTRAINT TEACHER_SSN_FK FOREIGN KEY (TEACHERSSN) REFERENCES TEACHER(TEACHER_SSN) ,
+CONSTRAINT COURSE_ID_FK FOREIGN KEY (COURSEID) REFERENCES COURSE(COURSE_ID) );
+
+
+CREATE TABLE ENROLLEDIN (STUDENTSSN NUMBER(20)  , COURSEID NUMBER(10) ,
+constraint ENROLL_pk primary key (STUDENTSSN,COURSEID) ,
+CONSTRAINT STUDENT_SSN_FK FOREIGN KEY (STUDENTSSN) REFERENCES STUDENT(STUDENT_SSN) ,
+CONSTRAINT COURSE_ID_FKK FOREIGN KEY (COURSEID) REFERENCES COURSE(COURSE_ID) );
+
+
+insert into student values (231313 , 20 , 'Nour khaled ', '01099975171');
+insert into student values (34232 , 25 , 'Omar Elbagory' , '01239393939');
+
+insert into course values (1 , 'Java For Beginners' , 500);
+insert into course values (2 , 'Java For Advanced' , 800);
+insert into course values (3 , 'c sharp For Beginners' , 200);
+insert into course values (4 , 'c ++ For Advanced' , 500);
+
+insert into teacher values ( 213213231 , 40 , 'Seif Mohamed', '0123332323');
+insert into teacher values ( 21313231 , 32 , 'Seif Hossam', '012382323');
+insert into teacher values (2132131 , 34 , 'Ziad Waleed' , '012391399321');
+insert into teacher values (1231231 , 88 , 'Nouran Zaki' , '0109129382138');
+
+INSERT INTO TEACHES VALUES(213213231,1);
+INSERT INTO TEACHES VALUES(2132131,2);
+INSERT INTO TEACHES VALUES(1231231,3);
+
+commit;
+
+create or replace
+procedure SearchCourses (course in VARCHAR2 , SearchOutput out sys_refcursor)
+as
+begin
+open searchoutput for
+SELECT COURSE_NAME 
+FROM COURSE  
+WHERE LOWER(COURSE_NAME) like  course || '%' ;
+end;
+
+
